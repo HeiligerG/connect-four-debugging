@@ -1,7 +1,7 @@
-import { Board, EMPTY, PLAYER_1, PLAYER_2 } from "./board.ts";
+import { Board, Player } from "./board.ts";
 
 const board = new Board();
-let player = PLAYER_1;
+let player = Player.PlayerX;
 
 board.output();
 
@@ -12,9 +12,9 @@ while (true) {
   board.output();
   console.log();
   const winner = board.winner(player, row, col);
-  if (winner != EMPTY) {
+  if (winner != Player.Nobody) {
     console.log(`Player ${player}: A winner is you!`);
     break;
   }
-  player = player == PLAYER_1 ? PLAYER_2 : PLAYER_1;
+  player = player == Player.PlayerX ? Player.PlayerO : Player.PlayerX;
 }

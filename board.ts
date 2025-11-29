@@ -1,20 +1,22 @@
-export const PLAYER_1: string = "x";
-export const PLAYER_2: string = "o";
-export const EMPTY: string = "_";
-
 const ROWS: number = 6;
 const COLS: number = 7;
 const CONNECT_N: number = 4;
 
+export enum Player {
+  Nobody = "_",
+  PlayerX = "x",
+  PlayerO = "o",
+}
+
 export class Board {
-  private fields: Array<Array<string>>;
+  private fields: Array<Array<Player>>;
 
   public constructor() {
     this.fields = Array(ROWS);
     for (let r = 0; r < this.fields.length; r++) {
       this.fields[r] = Array(COLS);
       for (let c = 0; c < this.fields[r].length; c++) {
-        this.fields[r][c] = EMPTY;
+        this.fields[r][c] = Player.Nobody;
       }
     }
   }
@@ -34,12 +36,9 @@ export class Board {
     }
   }
 
-  public makeMove(player: string, col: number): number {
-    if (![PLAYER_1, PLAYER_2].includes(player)) {
-      throw new Error(`"${player}" is not a valid player`);
-    }
+  public makeMove(player: Player, col: number): number {
     for (let r = this.fields.length - 1; r >= 0; r--) {
-      if (this.fields[r][col] == EMPTY) {
+      if (this.fields[r][col] == Player.Nobody) {
         this.fields[r][col] = player;
         return r;
       }
@@ -47,47 +46,47 @@ export class Board {
     return -1;
   }
 
-  public winner(player: string, row: number, col: number): string {
+  public winner(player: Player, row: number, col: number): Player {
     const horizontal = this.horizontalWinner(player, row);
-    if (horizontal != EMPTY) {
+    if (horizontal != Player.Nobody) {
       return horizontal;
     }
     const vertical = this.verticalWinner(player, col);
-    if (vertical != EMPTY) {
+    if (vertical != Player.Nobody) {
       return vertical;
     }
     const diagonal = this.diagonalWinner(player, row, col);
-    if (diagonal != EMPTY) {
+    if (diagonal != Player.Nobody) {
       return diagonal;
     }
-    return EMPTY;
+    return Player.Nobody;
   }
 
-  private verticalWinner(player: string, r: number): string {
+  private verticalWinner(player: Player, r: number): Player {
     const col = this.getCol(r);
     const win = player.repeat(CONNECT_N);
     if (col.join("").includes(win)) {
       return player;
     }
-    return EMPTY;
+    return Player.Nobody;
   }
 
-  private horizontalWinner(player: string, r: number): string {
+  private horizontalWinner(player: Player, r: number): Player {
     const row = this.getRow(r);
     const win = player.repeat(CONNECT_N);
     if (row.join("").includes(win)) {
       return player;
     }
-    return EMPTY;
+    return Player.Nobody;
   }
 
-  private diagonalWinner(player: string, r: number, c: number): string {
+  private diagonalWinner(player: Player, r: number, c: number): Player {
     const [diagUp, diagDown] = this.getDiagonals(r, c);
     const win = player.repeat(CONNECT_N);
     if (diagUp.includes(win) || diagDown.includes(win)) {
       return player;
     }
-    return EMPTY;
+    return Player.Nobody;
   }
 
   private getRow(r: number): Array<string> {
